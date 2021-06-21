@@ -1,38 +1,39 @@
 <template>
-    <el-form :model="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="审批人">
+            <el-input v-model="formInline.user" placeholder="审批人"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        <el-form-item label="活动区域">
+            <el-select v-model="formInline.region" placeholder="活动区域">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
         </el-form-item>
-        <el-form-item label="年龄" prop="age">
-            <el-input v-model.number="ruleForm.age"></el-input>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
     </el-form>
-    <el-input v-model="input"></el-input>
 </template>
 <!-- 
+    1、直接从文档复制过来的代码片段【依旧存在问题】
 
-    问题：为何el-form内的输入框无法输入内容
-    解决：将el-form标签的status-icon ref="ruleForm"同时去掉
+    存在问题：
+    el-select组件不生效：placeholder不生效，el-option不生效
  -->
 <script>
-    import {
-        ref
-    } from "vue"
     export default {
-        setup() {
-            const ruleForm = ref({
-                pass: '',
-                checkPass: '',
-                age: ''
-            })
-            const input = ref('')
+        data() {
             return {
-                ruleForm,
-                input
-            };
+                formInline: {
+                    user: '',
+                    region: ''
+                }
+            }
+        },
+        methods: {
+            onSubmit() {
+                console.log('submit!');
+            }
         }
     }
 </script>
