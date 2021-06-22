@@ -62,16 +62,25 @@ export default {
         // 触发注册方法
         const handleregister = (formName: String) => {
             ctx.$refs[formName].validate((valid: Boolean) => {
-                if (valid) {
-                    globalProperties.$http.post("https://imissu.herokuapp.com/api/1/auth/register", props.registerUser)
+
+                /*
+
+                    问题1、 Could not proxy request /v1/auth/register from localhost:8080 to https://imissu.herokuapp.com/api/.
+                    初步估计：是代理的问题【接口问题，接口无法访问】
+                */
+
+                if (valid) {//https://imissu.herokuapp.com/api/v1/auth/register
+                    globalProperties.$http.post("/api/v1/auth/register", props.registerUser)
                         .then((res: any) => {
                             globalProperties.$message({
-                                message: "注册成功",
+                                message: "登录成功",
                                 type: "success",
                             })
-
+                            //登录成功，存储token
+                            const { token } = res.data;
+                            localStorage.setItem("msToken", token);
                             // 路由跳转
-                            router.push("/")
+                            router.push("/") //以前vue2使用this.$router.push()
                         })
                 } else {
                     console.log('error submit!!');
@@ -84,6 +93,5 @@ export default {
         }
     }
 }
+
 </script>
-<style scoped>
-</style>

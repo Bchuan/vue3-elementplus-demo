@@ -16,7 +16,7 @@
             <el-button type="primary" class="submit-btn" @click="handleLogin('loginForm')">提交</el-button>
         </el-form-item>
         <!-- 找回密码 -->
-        <div class="tiparea">
+        <div class="tiparea" @click="handleForgetPassword()">
             <p>
                 忘记密码？
                 <a>立即找回</a>
@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { getCurrentInstance } from 'vue'
+import { useRouter } from 'vue-router';
 export default {
     props: {
         loginUser: {
@@ -38,24 +39,39 @@ export default {
             required: true
         }
     },
-    setup() {
+    setup(props: any) {
         // @ts-ignore
-        const { ctx } = getCurrentInstance(); // 获取当前实例，相当于vue2中的this
-
+        const { ctx, appContext } = getCurrentInstance(); // 获取当前实例，相当于vue2中的this
+        const router = useRouter();
+        const globalProperties = appContext.config.globalProperties;
         //触发登录方法
         const handleLogin = (formName: String) => {
             // console.log(ctx) //相当于this
             ctx.$refs[formName].validate((valid: Boolean) => {
                 if (valid) {
-                    alert('submit!');
+                    globalProperties.$http.post("/api/v1/auth/login", props.loginUser)
+                        .then((res: any) => {
+                            globalProperties.$message({
+                                message: "登录成功",
+                                type: "success",
+                            })
+                            //登录成功，存储token
+                            const { token } = res.data;
+                            localStorage.setItem("msToken", token);
+                            router.push('/')
+                        })
                 } else {
                     console.log('error submit!!');
                     return false;
                 }
             });
         }
+        const handleForgetPassword = () => {
+            router.push('/forgetpassword')
+        }
         return {
-            handleLogin
+            handleLogin，
+            handleForgetPassword
         }
     }
 }
